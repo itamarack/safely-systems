@@ -16,6 +16,8 @@ class SendNonComplianceNotification implements ShouldQueue
             return;
         }
 
-        $task->user->notify(new TaskNonCompliantNotification($task));
+        /** @var \App\Models\User $user */
+        $user = $task->user;
+        $user->notify(new TaskNonCompliantNotification($task));
     }
 }

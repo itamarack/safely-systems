@@ -209,6 +209,18 @@ Or directly:
 php artisan test
 ```
 
+## Static Analysis
+
+```bash
+composer analyse
+```
+
+Run both PHPStan and tests together:
+
+```bash
+composer check
+```
+
 ## If I Had Another 2–3 Hours
 
 1. **Expand test coverage** — The current suite covers the core API lifecycle, validation, filters, and notification dispatch. With more time I'd add web controller tests, edge cases around due date filtering, and test the activity log integration.
