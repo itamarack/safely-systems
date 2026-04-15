@@ -11,10 +11,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Carbon;
-use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Models\Concerns\HasActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
+/** @property \Illuminate\Support\Carbon $due_date */
 #[Fillable([
     'title',
     'description',
@@ -26,12 +26,12 @@ use Spatie\Activitylog\Support\LogOptions;
 ])]
 class Task extends Model
 {
-    use HasFactory, LogsActivity;
+    use HasFactory, HasActivity;
 
     protected function casts(): array
     {
         return [
-            'due_date' => Carbon::class,
+            'due_date' => 'date',
             'status'   => TaskStatus::class,
             'priority' => TaskPriority::class,
         ];

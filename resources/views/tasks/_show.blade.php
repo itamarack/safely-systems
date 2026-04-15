@@ -48,9 +48,9 @@
                 </span>
                 <small class="text-muted text-nowrap ms-2">{{ $log->created_at->diffForHumans() }}</small>
             </div>
-            @if($log->properties->get('attributes'))
+            @if($log->attribute_changes && $log->attribute_changes->get('attributes'))
                 <div class="mt-1">
-                    @foreach($log->properties->get('attributes') as $field => $value)
+                    @foreach($log->attribute_changes->get('attributes') as $field => $value)
                         <span class="badge bg-light text-dark border me-1">
                             {{ $field }}: {{ is_array($value) ? json_encode($value) : $value }}
                         </span>
