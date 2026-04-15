@@ -31,6 +31,7 @@ $(function () {
                 data: { _token: csrfToken, ...data },
             }).fail((xhr) => {
                 console.error(xhr);
+                if (xhr.status === 500) ui.toast('Server error');
             });
         },
 
