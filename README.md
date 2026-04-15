@@ -1,58 +1,201 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Safely — Compliance Task Manager
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A Laravel application for managing operational compliance tasks. Site managers can create tasks, assign them to users, set due dates, and track completion or non-compliance with corrective action notes.
 
-## About Laravel
+## Tech Stack
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- PHP 8.3 / Laravel 13
+- MySQL 8.4
+- Blade + Bootstrap 5 + jQuery + Vite
+- Spatie Activity Log for audit trails
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Create, edit, and view tasks with title, description, due date, assigned user, and priority (low / medium / high)
+- Task statuses: pending, completed, non-compliant
+- Corrective action notes required when marking a task as non-compliant
+- Dashboard with filters for status, assigned user, and due date (today / overdue / all)
+- Overdue and due-today row highlighting
+- AJAX-powered task editing and quick status updates (no full page reload)
+- Modal-based task detail view with activity log history
+- Queued email notification when a task is marked non-compliant
+- REST API with JSON resources (`/api/tasks`)
+- Database seeders: 5 users and 50 tasks
 
-## Learning Laravel
+## Requirements
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- PHP >= 8.3
+- Composer
+- Node.js >= 18 and npm
+- MySQL 8.x
+- Docker & Docker Compose (optional, for Sail)
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Setup
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+### Option 1 — Local (without Docker)
 
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Requires PHP >= 8.3, Composer, Node >= 18, npm, and a running MySQL server.
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone https://github.com/itamarack/safely-systems.git
+cd safely-systems
+cp .env.example .env
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Update the database settings in `.env` to point to your local MySQL:
 
-## Contributing
+```dotenv
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=laravel
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Then run the setup:
 
-## Code of Conduct
+```bash
+composer setup
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+`composer setup` handles everything in one step:
 
-## Security Vulnerabilities
+1. `composer install`
+2. Copies `.env.example` → `.env` (if `.env` doesn't exist)
+3. Generates the app key
+4. Runs migrations and seed database
+5. `npm install`
+6. `npm run build`
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Start the dev environment:
 
-## License
+```bash
+composer dev
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This launches four processes in parallel via `concurrently`:
+
+| Process | What it does |
+|---------|-------------|
+| `php artisan serve` | App server on http://localhost:8000 |
+| `php artisan queue:listen` | Queue worker for notifications |
+| `php artisan pail` | Real-time log tail |
+| `npm run dev` | Vite dev server with HMR |
+
+The app will be available at **http://localhost:8000**.
+
+---
+
+### Option 2 — Docker (Laravel Sail)
+
+Requires Docker and Docker Compose. No local PHP or Node install needed.
+
+```bash
+git clone https://github.com/itamarack/safely-systems.git
+cd safely-systems
+```
+
+Copy the environment file and configure it for Sail's MySQL container:
+
+```bash
+cp .env.example .env
+```
+
+Update the database settings in `.env`:
+
+```dotenv
+DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE=laravel
+DB_USERNAME=sail
+DB_PASSWORD=password
+```
+
+Install dependencies and set up the containers:
+
+```bash
+composer install
+composer sail-setup
+```
+
+The app will be available at **http://localhost** (port 80).
+
+Start the dev environment (queue worker, log tail, Vite):
+
+```bash
+composer sail-dev
+```
+
+To stop the containers:
+
+```bash
+./vendor/bin/sail down
+```
+
+## Usage
+
+### Web Dashboard
+
+Navigate to `/` to see the dashboard. From there you can:
+
+- Filter tasks by status, assigned user, or due date
+- Click a task title to view details and activity log in a modal
+- Click the pencil icon to edit a task (AJAX modal, no page reload)
+- Use quick-action buttons to mark tasks as completed, non-compliant, or reset to pending
+- When marking non-compliant, a corrective action textarea appears and is required
+
+### API Endpoints
+
+All endpoints are prefixed with `/api/tasks`.
+
+| Method  | URI                    | Description          |
+|---------|------------------------|----------------------|
+| GET     | `/api/tasks`           | List tasks (paginated, filterable) |
+| POST    | `/api/tasks`           | Create a task        |
+| GET     | `/api/tasks/{id}`      | Show a single task   |
+| PUT     | `/api/tasks/{id}`      | Update a task        |
+| PATCH   | `/api/tasks/{id}/status` | Update status only |
+
+Query parameters for filtering: `status`, `user_id`, `due_filter` (today / overdue).
+
+## Project Structure
+
+```
+app/
+├── Data/              TaskFilters DTO for clean filter passing
+├── Enums/             TaskStatus, TaskPriority, DueFilter (backed enums)
+├── Events/            TaskUpdated event
+├── Http/
+│   ├── Controllers/   Web + Api TaskController
+│   ├── Requests/      StoreTask, UpdateTask, UpdateTaskStatus form requests
+│   └── Resources/     TaskResource, TaskCollection, UserResource (API)
+├── Listeners/         SendNonComplianceNotification (queued)
+├── Models/            Task, User
+├── Notifications/     TaskNonCompliantNotification (queued mail)
+├── Providers/         AppServiceProvider (Bootstrap 5 paginator)
+└── Repositories/      TaskRepository (query + pagination)
+```
+
+## Key Design Decisions
+
+- **Backed enums** for status, priority, and due filters — type-safe, with helper methods for labels and badge classes.
+- **Form Request classes** handle all validation, including the conditional `corrective_action` requirement via `required_if:status,non_compliant`.
+- **TaskFilters DTO** keeps filter logic out of controllers; the `Task::scopeWithFilters` scope applies them at the query level.
+- **Repository pattern** for task queries — keeps controllers thin and query logic reusable.
+- **Event/Listener pattern** for non-compliance notifications — the `SendNonComplianceNotification` listener is queued, so it doesn't block the request.
+- **Spatie Activity Log** tracks field-level changes on tasks automatically.
+- **Blade partials** (`_table`, `_show`, `_status_badge`) for reusable, AJAX-friendly view fragments.
+
+## Running Tests
+
+```bash
+composer test
+```
+
+Or directly:
+
+```bash
+php artisan test
+```

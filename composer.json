@@ -38,9 +38,20 @@
             "composer install",
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
             "@php artisan key:generate",
-            "@php artisan migrate --force",
+            "@php artisan migrate:fresh --seed --force",
             "npm install --ignore-scripts",
             "npm run build"
+        ],
+        "sail-setup": [
+            "./vendor/bin/sail up -d",
+            "./vendor/bin/sail artisan key:generate",
+            "./vendor/bin/sail artisan migrate:fresh --seed",
+            "./vendor/bin/sail npm install",
+            "./vendor/bin/sail npm run build"
+        ],
+        "sail-dev": [
+            "Composer\\Config::disableProcessTimeout",
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"./vendor/bin/sail artisan queue:listen --tries=1 --timeout=0\" \"./vendor/bin/sail artisan pail --timeout=0\" \"./vendor/bin/sail npm run dev\" --names=queue,logs,vite --kill-others"
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
