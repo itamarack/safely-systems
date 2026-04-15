@@ -113,19 +113,28 @@ DB_USERNAME=sail
 DB_PASSWORD=password
 ```
 
-Install dependencies and set up the containers:
+Install dependencies and start the containers:
 
 ```bash
 composer install
-composer sail-setup
+./vendor/bin/sail up -d
+```
+
+Run the setup inside the container:
+
+```bash
+./vendor/bin/sail artisan key:generate
+./vendor/bin/sail artisan migrate:fresh --seed
+./vendor/bin/sail npm install
+./vendor/bin/sail npm run build
 ```
 
 The app will be available at **http://localhost** (port 80).
 
-Start the dev environment (queue worker, log tail, Vite):
+To start the queue worker for non-compliance notifications:
 
 ```bash
-composer sail-dev
+./vendor/bin/sail artisan queue:listen
 ```
 
 To stop the containers:
