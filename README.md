@@ -208,3 +208,20 @@ Or directly:
 ```bash
 php artisan test
 ```
+
+## If I Had Another 2–3 Hours
+
+1. **Feature tests** — Cover the full CRUD lifecycle, validation edge cases (e.g. corrective action `required_if`), filter combinations, and verify the non-compliance notification dispatch.
+2. **Authentication & authorization** — Scaffold login with Laravel Breeze and add gate/policy checks so only the assigned user or a manager can update tasks. Essential for any real SaaS product.
+3. **Redis queue driver** — Swap from database queue to Redis for better throughput on background jobs like non-compliance notifications, and add failed job retry handling.
+4. **Dashboard summary stats** — Add counters at the top of the dashboard (total pending, overdue, completed today, non-compliant) for a quick at-a-glance overview without scrolling.
+5. **API authentication & rate limiting** — Wire up Sanctum token-based auth and add rate limiting middleware to protect the API endpoints for external integrations.
+
+## AI Usage Note
+
+Claude AI-assisted tools were used for:
+- Scaffolding boilerplate (migrations, factories, seeders, form requests)
+- Generating Blade view markup
+- Assisted in drafting this README
+
+All generated code was reviewed, adjusted for consistency, and tested manually. Architectural decisions (logics, enums, DTO, repository, event/listener pattern) were made deliberately and not auto-generated.
