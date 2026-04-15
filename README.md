@@ -219,9 +219,24 @@ php artisan test
 
 ## AI Usage Note
 
-Claude AI-assisted tools were used for:
+AI-assisted tools (Claude) were used during development.
+
+**What I used AI for:**
 - Scaffolding boilerplate (migrations, factories, seeders, form requests)
 - Generating Blade view markup
 - Assisted in drafting this README
 
-All generated code was reviewed, adjusted for consistency, and tested manually. Architectural decisions (logics, enums, DTO, repository, event/listener pattern) were made deliberately and not auto-generated.
+**Where it helped:**
+- Accelerated repetitive setup work (migration schemas, factory definitions, validation rules) so I could focus more time on architecture and UX decisions
+- Helped generate consistent Bootstrap markup across multiple Blade partials
+
+**What I reviewed or changed manually:**
+- All architectural decisions (controllers, enums, DTO pattern, repository pattern, event/listener pattern) were deliberate choices, not AI-suggested
+- Reviewed and adjusted every generated file for consistency, naming conventions, and Laravel best practices
+- Manually tested the full workflow end-to-end (create, filter, edit, status updates, non-compliance flow)
+- Tuned the Spatie Activity Log configuration and verified field-level change tracking
+
+**Trade-offs or shortcuts:**
+- No authentication — kept out of scope to focus on the core compliance workflow within the time limit
+- Mail driver set to `log` — notifications are queued and dispatched but not sent to a real SMTP server
+- No feature tests — prioritised completing all optional extras (activity log, API, modals, notifications) over test coverage
