@@ -42,8 +42,10 @@ $(function () {
             return this.request('POST', routes.tasksUpdate.replace(':id', id), { _method: 'PUT', ...data });
         },
 
-        updateStatus(id, status) {
-            return this.request('PATCH', routes.tasksStatus.replace(':id', id), { status });
+        updateStatus(id, status, corrective_action = null) {
+            const data = { status };
+            if (corrective_action) data.corrective_action = corrective_action;
+            return this.request('PATCH', routes.tasksStatus.replace(':id', id), data);
         },
     };
 
@@ -163,10 +165,11 @@ $(function () {
         const { taskId, status } = $(this).data();
 
         if (status === 'non_compliant') {
-            $(this).closest('tr').find('.btn-update-status').click();
-            $('#statusModal').one('shown.bs.modal', function () {
-                $('#edit-status').val('non_compliant').trigger('change');
-            });
+            currentTaskId = taskId;
+            $('#nc-corrective-action').val('');
+            ui.clearValidation($('#nc-form'));
+            $('#nc-modal-alert').addClass('d-none').text('');
+            modal.show('nonCompliantModal');
             return;
         }
 
@@ -176,6 +179,26 @@ $(function () {
                 ui.toast(response.message);
             })
             .fail(() => ui.toast('Something went wrong.'));
+    });
+
+    $('#btn-save-nc').on('click', function () {
+        const button = $(this);
+        const form = $('#nc-form');
+        ui.setLoading(button, true);
+        ui.clearValidation(form);
+
+        api.updateStatus(currentTaskId, 'non_compliant', $('#nc-corrective-action').val())
+            .done((response) => {
+                modal.hide('nonCompliantModal');
+                table.reload();
+                ui.toast(response.message);
+            })
+            .fail((xhr) => {
+                ui.showValidationErrors(xhr, form, $('#nc-modal-alert'));
+            })
+            .always(() => {
+                ui.setLoading(button, false, 'Mark Non-Compliant');
+            });
     });
 
     $(document).on('click', '.btn-update-status', function () {
