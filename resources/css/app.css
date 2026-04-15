@@ -1,11 +1,31 @@
-@import 'tailwindcss';
+@import "bootstrap/dist/css/bootstrap.min.css";
+@import "bootstrap-icons/font/bootstrap-icons.min.css";
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
+body {
+    background: #f8f9fa;
+}
 
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+.navbar-brand {
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.badge-priority-low {
+    background: #198754;
+}
+
+.badge-priority-medium {
+    background: #fd7e14;
+}
+
+.badge-priority-high {
+    background: #dc3545;
+}
+
+.table-overdue td {
+    background-color: #fff5f5 !important;
+}
+
+.table-due-today td {
+    background-color: #fffbea !important;
 }
