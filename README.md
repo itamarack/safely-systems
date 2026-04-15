@@ -211,7 +211,7 @@ php artisan test
 
 ## If I Had Another 2–3 Hours
 
-1. **Feature tests** — Cover the full CRUD lifecycle, validation edge cases (e.g. corrective action `required_if`), filter combinations, and verify the non-compliance notification dispatch.
+1. **Expand test coverage** — The current suite covers the core API lifecycle, validation, filters, and notification dispatch. With more time I'd add web controller tests, edge cases around due date filtering, and test the activity log integration.
 2. **Authentication & authorization** — Scaffold login with Laravel Breeze and add gate/policy checks so only the assigned user or a manager can update tasks. Essential for any real SaaS product.
 3. **Redis queue driver** — Swap from database queue to Redis for better throughput on background jobs like non-compliance notifications, and add failed job retry handling.
 4. **Dashboard summary stats** — Add counters at the top of the dashboard (total pending, overdue, completed today, non-compliant) for a quick at-a-glance overview without scrolling.
@@ -239,4 +239,3 @@ AI-assisted tools (Claude) were used during development.
 **Trade-offs or shortcuts:**
 - No authentication — kept out of scope to focus on the core compliance workflow within the time limit
 - Mail driver set to `log` — notifications are queued and dispatched but not sent to a real SMTP server
-- No feature tests — prioritised completing all optional extras (activity log, API, modals, notifications) over test coverage
